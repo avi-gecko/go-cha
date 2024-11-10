@@ -15,14 +15,22 @@ func Create(p2p_type string, ip string, port string) (P2P, error) {
 
 	switch p2p_type {
 	case "ipv4":
-		server, err := net.Listen("tcp", ip+":"+port)
+		server, err := net.Listen("tcp4", ip+":"+port)
 
 		if err != nil {
 			return nil, errors.New("Can' create p2p with type: " + p2p_type + "\nCause: " + err.Error())
 		}
 
 		p2p = &P2PIPv4{ipv4: ip, port: port, server: server}
-	//TODO: add ipv6
+
+	case "ipv6":
+		server, err := net.Listen("tcp6", "["+ip+"]"+":"+port)
+
+		if err != nil {
+			return nil, errors.New("Can' create p2p with type: " + p2p_type + "\nCause: " + err.Error())
+		}
+
+		p2p = &P2PIPv6{ipv6: ip, port: port, server: server}
 	default:
 		return nil, errors.New("Can' create p2p with type: " + p2p_type + "\nCause: incorrect type")
 	}
@@ -57,4 +65,19 @@ type P2PIPv6 struct {
 	port   string
 	server net.Listener
 	client net.Conn
+}
+
+func (p2p *P2PIPv6) handleConnection(conn net.Conn) error {
+	//TODO: add output to stdin or socket for gui
+	return nil
+}
+
+func (p2p *P2PIPv6) Listen() error {
+	for {
+		conn, err := p2p.server.Accept()
+		if err != nil {
+			return errors.New("P2P server can't listen\nCause: " + err.Error())
+		}
+		go p2p.handleConnection(conn)
+	}
 }
