@@ -1,4 +1,4 @@
-package p2p_server_test
+package p2p_test
 
 import (
 	"testing"
@@ -47,7 +47,7 @@ func TestCreateIPv4WithWrongPort(t *testing.T) {
 	t.Logf("Error: %v, instance: %v", err, p2p_test)
 }
 
-func TestP2PListen(t *testing.T) {
+func TestCreateIPv4Listen(t *testing.T) {
 	p2p_test, err := p2p.Create("ipv4", "127.0.0.1", "8081")
 
 	if err != nil {
